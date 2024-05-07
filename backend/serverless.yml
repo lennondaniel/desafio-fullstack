@@ -1,46 +1,76 @@
-app: serverless-youtube
-service: serverless-youtube
+app: serverless-tasks
+service: serverless-tasks
 frameworkVersion: '3'
 
 provider:
   name: aws
   runtime: nodejs16.x
   stage: local
+  region: us-east-1
   apiGateway:
     shouldStartNameWithService: true
 
+resources:
+  Resources:
+    tasksEmailQueue:
+      Type: 'AWS::SQS::Queue'
+      Properties:
+        QueueName: tasksEmailQueue
+        ContentBasedDeduplication: false
+
+custom:
+  serverless-offline-sqs:
+    queueName: tasksEmailQueue
+    autoCreate: true
+    apiVersion: 'latest'
+    endpoint: http://0.0.0.0:9324
+    region: ${self:provider.region}
+    accessKeyId: root
+    secretAccessKey: root
+    skipCacheInvalidation: false
+
+
 functions:
   create-task:
-    handler: src/functions/create-task.handler
+    handler: src/functions/lambda/create-task.handler
     events:
       - httpApi:
           path: /task
           method: post
   list-tasks:
-    handler: src/functions/list-tasks.handler
+    handler: src/functions/lambda/list-tasks.handler
     events:
       - httpApi:
           path: /task
           method: get
   find-task:
-    handler: src/functions/find-task.handler
+    handler: src/functions/lambda/find-task.handler
     events:
       - httpApi:
           path: /task/{id}
           method: get
   update-task:
-    handler: src/functions/update-task.handler
+    handler: src/functions/lambda/update-task.handler
     events:
       - httpApi:
           path: /task/{id}
           method: put
   delete-task:
-    handler: src/functions/delete-task.handler
+    handler: src/functions/lambda/delete-task.handler
     events:
       - httpApi:
           path: /task/{id}
           method: delete
+  consumer:
+    handler: src/functions/sqs/consumer.handler
+    events:
+      - sqs:
+          arn: arn:aws:sqs:elasticmq:000000000000:tasksEmailQueue
+
+
 
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
+  - serverless-offline-sqs
+  - serverless-lift

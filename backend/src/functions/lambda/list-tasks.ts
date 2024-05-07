@@ -1,8 +1,8 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { TasksRepository } from '../repositories/tasks.repository'
-import { TasksService } from '../services/tasks.service'
-import { TaskModel } from '../models/tasks.model'
-import { DbConnect } from '../database/connection'
+import { TasksService } from '../../services/tasks.service'
+import { TasksRepository } from '../../repositories/tasks.repository'
+import { TaskModel } from '../../models/tasks.model'
+import { DbConnect } from '../../database/connection'
 
 const taskRepository = new TasksRepository(TaskModel)
 const tasksService = new TasksService(taskRepository) 
@@ -12,9 +12,7 @@ export const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   try {
     DbConnect()
-
-    const id = event.pathParameters?.id as string
-    const response = await tasksService.deleteTask(id)
+    const response = await tasksService.getTasks()
   
     return {
       statusCode: 200,
