@@ -1,0 +1,46 @@
+app: serverless-youtube
+service: serverless-youtube
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: local
+  apiGateway:
+    shouldStartNameWithService: true
+
+functions:
+  create-task:
+    handler: src/functions/create-task.handler
+    events:
+      - httpApi:
+          path: /task
+          method: post
+  list-tasks:
+    handler: src/functions/list-tasks.handler
+    events:
+      - httpApi:
+          path: /task
+          method: get
+  find-task:
+    handler: src/functions/find-task.handler
+    events:
+      - httpApi:
+          path: /task/{id}
+          method: get
+  update-task:
+    handler: src/functions/update-task.handler
+    events:
+      - httpApi:
+          path: /task/{id}
+          method: put
+  delete-task:
+    handler: src/functions/delete-task.handler
+    events:
+      - httpApi:
+          path: /task/{id}
+          method: delete
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline

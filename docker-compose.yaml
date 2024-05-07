@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # localstack:
+  #   container_name: localstack
+  #   image: localstack/localstack:latest
+  #   ports:
+  #     - "127.0.0.1:4566:4566"            # LocalStack Gateway
+  #     - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+  #   environment:
+  #     - SERVICES=s3,sqs,lambda,apigateway,dynamodb,cloudformation,logs,iam
+  #     - DEBUG=1
+  #     - ENFORCE_IAM=1
+  #     - DOCKER_HOST=unix:///var/run/docker.sock
+  #   volumes:
+  #     - localstack:/var/lib/localstack
+  #     - "/var/run/docker.sock:/var/run/docker.sock"
+
+  mongo:
+    image: mongo:latest
+    container_name: 'mongodb'
+    volumes:
+      - mongodb:/data/db
+      - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
+    env_file:
+      - ./backend/.env
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
+      
+volumes:
+  localstack:
+  mongodb:
