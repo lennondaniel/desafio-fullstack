@@ -1,13 +1,4 @@
 
-export interface Task {
-    _id?: string,
-    description: string,
-    completed?: boolean,
-    completedAt?: string | null,
-    createdAt?: string,
-}
-
-
 export class HttpService {
   private readonly baseUrl: string;
 

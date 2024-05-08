@@ -1,24 +1,19 @@
-import { FaRegTrashAlt, FaPencilAlt } from "react-icons/fa";
-import { RiMenuSearchLine } from "react-icons/ri";
-import Checkbox from "./Checkbox";
-import ButtonActions from "./ButtonActions";
 import Card from "./Card";
 import { useEffect, useState } from "react";
 import SkeletonCard from "./SkeletonCard";
-import { HttpService, Task } from "@/services/http.service";
-
-export default function Tasks() {
+import { Task } from "@/interfaces/tasks.interface";
+interface Props {
+    tasks: Task[] | undefined
+    isLoading: boolean
+}
+export default function Tasks(props: Props) {
     const [loading, setLoading] = useState<boolean>(true)
     const [tasks, setTasks] = useState<Task[]>()
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL as string
-    const service = new HttpService(baseUrl)
-    
+
     useEffect(() => {
-        service.get<Task[]>('/task').then((resp) => {
-            setTasks(resp)
-            setLoading(false)
-        })
-    }, [])
+            setTasks(props.tasks)
+            setLoading(props.isLoading)
+    }, [props])
     return (
         <div className="p-5 flex gap-20 justify-between">
             <div className="w-1/2 ">
@@ -30,7 +25,7 @@ export default function Tasks() {
                 ))}
             </div>
             <div className="w-1/2 ">
-                <h1 className="text-gray-500 font-medium mb-4 text-lg">Concluídos</h1>
+                <h1 className="text-gray-500 font-medium mb-4 text-lg">Concluídas</h1>
                 {loading && <SkeletonCard /> }
                 {!loading && tasks?.map(task => (
                     task.completed &&

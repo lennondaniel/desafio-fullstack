@@ -1,4 +1,4 @@
-import { Task } from "@/services/tasks.service";
+import { Task } from "@/interfaces/tasks.interface";
 import Checkbox from "./Checkbox";
 import ButtonActions from "./ButtonActions";
 import { RiMenuSearchLine } from "react-icons/ri";
@@ -31,8 +31,6 @@ export default function Card ({task}: Props) {
                         </ButtonActions>
                     </div>
             }
-
-
         </div>
     )
 }
