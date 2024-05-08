@@ -4,13 +4,16 @@ import ButtonActions from "./ButtonActions";
 import { RiMenuSearchLine } from "react-icons/ri";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
+import { useContext } from "react";
+import { TasksContext, TasksContextType } from "./TasksProvider";
 
 interface Props {
     task: Task
-
 }
 
 export default function Card ({task}: Props) {
+    const {showTask} = useContext(TasksContext) as TasksContextType
+
     return (
         <div className="flex justify-between rounded bg-white items-center p-3 mb-5 shadow-sm">
             <div className="flex gap-3">
@@ -20,13 +23,13 @@ export default function Card ({task}: Props) {
             {
                 !task.completed &&
                     <div className="flex gap-3">
-                        <ButtonActions>
+                        <ButtonActions onHandler={() => showTask(task?._id)}>
                             <RiMenuSearchLine />
                         </ButtonActions>
-                        <ButtonActions>
+                        <ButtonActions onHandler={() => showTask(task?._id)}>
                             <FaPencilAlt />
                         </ButtonActions>
-                        <ButtonActions>
+                        <ButtonActions onHandler={() => showTask(task?._id)}>
                             <FaRegTrashAlt />
                         </ButtonActions>
                     </div>

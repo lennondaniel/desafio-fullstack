@@ -1,38 +1,31 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import Spinner from "./Spinner";
-import { ResponseTasks } from "@/interfaces/tasks.interface";
-interface Props {
-    addTask(task: string): void
-    tasks: ResponseTasks | undefined
-    isLoading: boolean
-}
+import { TasksContext, TasksContextType } from "./TasksProvider";
 
-export default function Header (props: Props) {
-    const [task, setTask] = useState<string>('')
+export default function Header () {
+
     const [valid, setValid] = useState<boolean>(true)
-    const [loading, setLoading] = useState<boolean>(true)
-    const [tasks, setTasks] = useState<ResponseTasks>()
+    const {tasks, taskInput, setTaskInput, addTask, isLoading, updateTask, task} = useContext(TasksContext) as TasksContextType
     
-    const onChangeTask = () => {
-        if(!task) {
+    const onSubmit = () => {
+        if(!taskInput) {
             setValid(false)
             return
         }
-        props.addTask(task)
-        setTask('')
+        if(task){
+            updateTask({...task, description: taskInput})
+        } else {
+            addTask(taskInput)
+        }
     }
 
     useEffect(() => {
-        if(task) {
+        if(taskInput) {
             setValid(true)
         }
-        setLoading(props.isLoading)
-        setTasks(props.tasks)
-        if(props.tasks) {
-            setTasks(props.tasks)
-        }
-    }, [props])
+
+    }, [taskInput])
 
     return (
         <div className="flex flex-col gap-8 w-auto">
@@ -51,12 +44,12 @@ export default function Header (props: Props) {
             <div className="flex flex-col">
                 <div className={`border-b-2 ${valid ? 'border-blue-600' : 'border-danger'}  flex justify-between`}>
                     <input type="text" className="bg-transparent focus:outline-none w-full h-full p-2" 
-                        onChange={(event) => setTask(event.target.value)} 
-                        value={task}
+                        onChange={(event) => setTaskInput(event.target.value)} 
+                        value={taskInput}
                         placeholder="Adicionar nova tarefa" />
-                    <button disabled={loading} className="bg-blue-600 text-white text-lg p-2 mb-1 w-20 h-10 rounded flex justify-center items-center" onClick={() => onChangeTask()}>
-                        {loading && <Spinner />}
-                        {!loading && <FaPlus />}
+                    <button disabled={isLoading} className="bg-blue-600 text-white text-lg p-2 mb-1 w-20 h-10 rounded flex justify-center items-center" onClick={() => onSubmit()}>
+                        {isLoading && <Spinner />}
+                        {!isLoading && <FaPlus />}
                     </button>
                 </div>
                 {

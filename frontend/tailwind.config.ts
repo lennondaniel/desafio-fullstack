@@ -14,12 +14,7 @@ const config: Config = {
         primary: '#2563eb',
         edit: '#f59e0b',
         details: '#7c3aed'
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
+      }
     },
   },
   plugins: [],
