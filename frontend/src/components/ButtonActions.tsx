@@ -1,12 +1,11 @@
-import {ReactElement} from "react"
+import { ReactElement } from "react"
 
 interface Props {
-    color: string
     children: ReactElement
 }
-export default function ButtonActions ({color, children}: Props) {
+export default function ButtonActions ({ children }: Props) {
     return (
-        <button className={`${color} text-white text-sm p-2 rounded`}>
+        <button className={`bg-gray-200 border border-gray-300 text-gray-800 text-md p-2 rounded`}>
             {children}
         </button>
     )
