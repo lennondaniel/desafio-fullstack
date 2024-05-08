@@ -1,5 +1,5 @@
 import { APIGatewayEvent } from "aws-lambda";
-import { RequestTaskDto } from "../Dtos/tasks.dto";
+import { RequestTaskDto, ResponseTasksDto } from "../Dtos/tasks.dto";
 import { ITaskRepository } from "../interfaces/tasks.interface";
 import { Task, TaskModel } from "../models/tasks.model";
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
@@ -14,8 +14,16 @@ export class TasksService {
         await this.respository.create(task)
     }
 
-    async getTasks(): Promise<Task[]> {
-        return await this.respository.getAll()
+    async getTasks(): Promise<ResponseTasksDto> {
+        const tasks = await this.respository.getAll()
+        const tasksPending = tasks.filter(task => !task.completed)
+        const tasksCompleted = tasks.filter(task => task.completed)
+        return {
+            tasks: tasks,
+            total: tasks.length,
+            pending: tasksPending.length,
+            completed: tasksCompleted.length
+        }
     }
 
     async findOneTask(id: string): Promise<Task | null> {
