@@ -5,7 +5,7 @@ import { Task } from "../models/tasks.model";
 export interface ITaskRepository {
     create(data: Task): Promise<any>;
     getAll(): Promise<Task[]>
-    findById(id: string): Promise<Task | null>;
-    update(id: string, data: RequestTaskDto): Promise<any | null>;
+    findById(id: string): Promise<Task>;
+    update(id: string, data: RequestTaskDto): Promise<Task>;
     delete(id: string): Promise<void>;
 }

@@ -25,19 +25,27 @@ export class TasksService {
         }
     }
 
-    async findOneTask(id: string): Promise<Task | null> {
+    async findOneTask(id: string): Promise<Task> {
         return await this.respository.findById(id)
     }
 
     async updateTask(id: string, taskDto: RequestTaskDto): Promise<void> {
-        await this.respository.update(id, taskDto)
+        const taskOld = await this.respository.findById(id)
+        const date = new Date()
+        const completedAt = taskDto.completed ? date : null
+        const taskUpdated = await this.respository.update(id, {...taskDto, completedAt: completedAt})
+        console.log(taskUpdated)
+        console.log(taskOld)
+        if(!taskOld.completed && taskUpdated.completed ) {
+            this.publishQueueEmail(taskUpdated)
+        }
     }
 
     async deleteTask(id: string): Promise<void> {
         await this.respository.delete(id)
     }
 
-    async publishQueueEmail (event: APIGatewayEvent) {
+    async publishQueueEmail (task: Task) {
 
         const sqsUrl: string = `http://${process.env.SQS_HOST}:${process.env.SQS_PORT}`;
         const sqsQueue: string = `${sqsUrl}/000000000000/${process.env.SQS_QUEUE_NAME}`;
@@ -53,9 +61,7 @@ export class TasksService {
         const message =  new SendMessageCommand({
             DelaySeconds: 10,
             QueueUrl: sqsQueue,
-            MessageBody: JSON.stringify({
-                message: 'Hello from Lambda!',
-            }),
+            MessageBody: JSON.stringify(task),
         })
 
         return await sqs.send(message)

@@ -20,8 +20,6 @@ export const handler = async (
       description,
       completed
     })
-
-    await tasksService.publishQueueEmail(event)
   
     return {
       statusCode: 200,

@@ -14,7 +14,7 @@ export class TasksRepository implements ITaskRepository {
     return await this.model.find({});
   }
 
-  async findById(id: string): Promise<Task | null> {
+  async findById(id: string): Promise<Task> {
     const task = await this.model.findById(id);
     if(!task) {
       throw new Error('Task not found')
@@ -22,16 +22,12 @@ export class TasksRepository implements ITaskRepository {
     return task
   }
 
-  async update(id: string, {description, completed}: RequestTaskDto): Promise<Task | null> {
-    const task = await this.model.findById(id);
-    if(!task) {
-      throw new Error('Task not found')
-    }
-    const date = new Date()
-    task.description = description
-    task.completed = completed
-    task.completedAt = completed ? date : null
-    return await task.save();
+  async update(id: string, taskDto: RequestTaskDto): Promise<Task> {
+      const task = await this.model.findByIdAndUpdate(id, taskDto, {returnDocument: 'after'})
+      if(!task) {
+        throw new Error('Not found update task')
+      }
+      return task
   }
 
   async delete(id: string): Promise<void> {
