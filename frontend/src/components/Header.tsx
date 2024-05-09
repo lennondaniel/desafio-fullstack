@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { KeyboardEvent, useContext, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import Spinner from "./Spinner";
 import { TasksContext, TasksContextType } from "./TasksProvider";
@@ -19,6 +19,12 @@ export default function Header () {
             addTask(taskInput)
         }
     }
+
+    const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            onSubmit();
+        }
+    };
 
     useEffect(() => {
         if(taskInput) {
@@ -43,11 +49,16 @@ export default function Header () {
             </div>
             <div className="flex flex-col">
                 <div className={`border-b-2 ${valid ? 'border-blue-600' : 'border-danger'}  flex justify-between`}>
-                    <input type="text" className="bg-transparent focus:outline-none w-full h-full p-2" 
+                    <input type="text" className="bg-transparent focus:outline-none w-full h-full p-2"
+                        aria-label="task-input"
                         onChange={(event) => setTaskInput(event.target.value)} 
                         value={taskInput}
+                        onKeyDown={(event) => handleKeyPress(event)}
                         placeholder="Adicionar nova tarefa" />
-                    <button disabled={isLoading} className="bg-blue-600 text-white text-lg p-2 mb-1 w-20 h-10 rounded flex justify-center items-center" onClick={() => onSubmit()}>
+                    <button disabled={isLoading} className="bg-blue-600 text-white text-lg p-2 mb-1 w-20 h-10 
+                        rounded flex justify-center items-center" 
+                        aria-label="task-button"
+                        onClick={() => onSubmit()}>
                         {isLoading && <Spinner />}
                         {!isLoading && <FaPlus />}
                     </button>
