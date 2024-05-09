@@ -2,6 +2,7 @@
 import Header from "@/components/Header";
 import Tasks from "@/components/Tasks";
 import { TasksContext, TasksContextType } from "@/components/TasksProvider";
+import Toast from "@/components/Toast";
 import { useContext, useEffect, useState } from "react";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <div className="container card shadow-lg bg-bright rounded flex flex-col p-10">
         <Header />
         <Tasks />
+        <Toast />
       </div>
     </main>
   );

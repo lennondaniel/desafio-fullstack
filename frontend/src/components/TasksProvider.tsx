@@ -2,13 +2,21 @@
 import { ResponseTasks, Task } from "@/interfaces/tasks.interface";
 import { HttpService } from "@/services/http.service";
 import React, { Dispatch, ReactElement, SetStateAction, createContext, use, useState } from "react";
+import { TypeOptions } from "react-toastify";
+
+interface Toast {
+    type: TypeOptions
+    message: string
+}
 
 export type TasksContextType = {
     tasks: ResponseTasks | undefined,
     task: Task | undefined
     taskInput: string
-    setTaskInput: Dispatch<SetStateAction<string>>
     isLoading: boolean
+    toast: Toast | undefined
+    setToast: Dispatch<SetStateAction<Toast | undefined>>
+    setTaskInput: Dispatch<SetStateAction<string>>
     getTasks: () => void
     addTask: (task: string) => void
     showTask: (id: string | undefined) => void
@@ -28,6 +36,7 @@ export default function TasksProvider({ children }: Props) {
     const [task, setTask] = useState<Task | undefined>(undefined)
     const [taskInput, setTaskInput] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [toast, setToast] = useState<Toast | undefined>(undefined)
 
     const getTasks = () => {
         service.get<ResponseTasks>('/task').then((resp) => {
@@ -40,10 +49,14 @@ export default function TasksProvider({ children }: Props) {
         const data: Task = {
             'description': task
         }
-        service.post<Task>('/task', data).then((respe) => {
+        service.post<Task>('/task', data).then(() => {
             setIsLoading(false)
             setTaskInput('')
             getTasks()
+            setToast({
+                message: 'Task adicionada com sucesso!',
+                type: 'success',
+            })
         })
     }
 
@@ -56,11 +69,14 @@ export default function TasksProvider({ children }: Props) {
 
     const updateTask = (task: Task): void => {
         setIsLoading(true)
-
         service.put<Task>(`/task/${task._id}`, task).then((resp) => {
             setIsLoading(false)
             setTaskInput('')
             getTasks()
+            setToast({
+                message: 'Task atualizada com sucesso!',
+                type: 'success',
+            })
         })
     }
 
@@ -70,6 +86,8 @@ export default function TasksProvider({ children }: Props) {
                 isLoading, 
                 taskInput, 
                 task, 
+                toast,
+                setToast,
                 setTaskInput, 
                 getTasks, 
                 addTask, 
