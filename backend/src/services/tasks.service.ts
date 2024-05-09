@@ -4,6 +4,7 @@ import { ITaskRepository } from "../interfaces/tasks.interface";
 import { Task, TaskModel } from "../models/tasks.model";
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import 'dotenv/config'
+import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
 export class TasksService {
     constructor(readonly respository: ITaskRepository){}
@@ -34,8 +35,7 @@ export class TasksService {
         const date = new Date()
         const completedAt = taskDto.completed ? date : null
         const taskUpdated = await this.respository.update(id, {...taskDto, completedAt: completedAt})
-        console.log(taskUpdated)
-        console.log(taskOld)
+
         if(!taskOld.completed && taskUpdated.completed ) {
             this.publishQueueEmail(taskUpdated)
         }
@@ -45,8 +45,7 @@ export class TasksService {
         await this.respository.delete(id)
     }
 
-    async publishQueueEmail (task: Task) {
-
+    async publishQueueEmail(task: Task): Promise<void> {
         const sqsUrl: string = `http://${process.env.SQS_HOST}:${process.env.SQS_PORT}`;
         const sqsQueue: string = `${sqsUrl}/000000000000/${process.env.SQS_QUEUE_NAME}`;
         const sqs = new SQSClient({
@@ -64,6 +63,24 @@ export class TasksService {
             MessageBody: JSON.stringify(task),
         })
 
-        return await sqs.send(message)
+        await sqs.send(message)
+    }
+
+    async sendEmail(task: Task): Promise<void> {
+        const ses = new SESv2Client({
+            endpoint: `http://${process.env.SES_HOST}:${process.env.SES_PORT}`,
+            region: 'aws-ses-v2-local',
+            credentials: { accessKeyId: 'ANY_STRING', secretAccessKey: 'ANY_STRING' },
+        });
+        await ses.send(new SendEmailCommand({
+            FromEmailAddress: 'sender@example.com',
+            Destination: { ToAddresses: ['receiver@example.com'] },
+            Content: {
+                Simple: {
+                    Subject: { Data: 'Tarefa concluída' },
+                    Body: { Text: { Data: `A tarefa ${task.description} foi concluída` } },
+                }
+            },
+        }))
     }
 }
