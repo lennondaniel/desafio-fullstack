@@ -3,16 +3,18 @@ import Checkbox from "./Checkbox";
 import ButtonActions from "./ButtonActions";
 import { RiMenuSearchLine } from "react-icons/ri";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { TasksContext, TasksContextType } from "./TasksProvider";
 import { useRouter } from "next/navigation";
+import ConfirmModal from "./ConfirmModal";
 
 interface Props {
     task: Task
 }
 
 export default function Card ({task}: Props) {
-    const {showTask} = useContext(TasksContext) as TasksContextType
+    const {showTask, deleteTask} = useContext(TasksContext) as TasksContextType
+    const [showModal, setShowModal] = useState<boolean>(false)
     const router = useRouter()
 
     const detailsTask = () => {
@@ -20,6 +22,7 @@ export default function Card ({task}: Props) {
     }
 
     return (
+        <>
         <div className="flex justify-between rounded bg-white items-center p-3 mb-5 shadow-sm">
             <div className="flex gap-3">
                 {<Checkbox task={task} checked={task.completed ?? false } />}
@@ -37,7 +40,7 @@ export default function Card ({task}: Props) {
                         <ButtonActions onHandler={() => showTask(task?._id)}>
                             <FaPencilAlt />
                         </ButtonActions>
-                        <ButtonActions onHandler={() => showTask(task?._id)}>
+                        <ButtonActions onHandler={() => setShowModal(true) }>
                             <FaRegTrashAlt />
                         </ButtonActions>
                     </>
@@ -45,7 +48,8 @@ export default function Card ({task}: Props) {
                 }
                
             </div>
-            
         </div>
+        <ConfirmModal isShow={showModal} id={task?._id} cancelHandler={setShowModal} confirmHandler={deleteTask} />
+        </>
     )
 }

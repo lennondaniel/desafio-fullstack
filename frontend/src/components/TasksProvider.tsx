@@ -23,6 +23,7 @@ export type TasksContextType = {
     showTask: (id: string | undefined) => void
     updateTask: (task: Task) => void
     completeTask: (task: Task) => void
+    deleteTask: (id: string | undefined) => void
 }
 interface Props {
     children: ReactElement
@@ -63,8 +64,10 @@ export default function TasksProvider({ children }: Props) {
     }
 
     const showTask = (id: string | undefined): void => {
+        setIsLoading(true)
         service.get<Task>(`/task/${id}`).then((resp) => {
             setTaskInput(resp.description)
+            setIsLoading(false)
             setTask(resp)
         })
     }
@@ -75,7 +78,7 @@ export default function TasksProvider({ children }: Props) {
 
     const updateTask = (task: Task): void => {
         setIsLoading(true)
-        service.put<Task>(`/task/${task._id}`, task).then((resp) => {
+        service.put<Task>(`/task/${task._id}`, task).then(() => {
             setIsLoading(false)
             setTaskInput('')
             getTasks()
@@ -87,11 +90,24 @@ export default function TasksProvider({ children }: Props) {
     }
 
     const completeTask = (task: Task): void => {
-        service.put<Task>(`/task/${task._id}`, task).then((resp) => {
+        setIsLoading(true)
+        service.put<Task>(`/task/${task._id}`, task).then(() => {
             setIsLoading(false)
             getTasks()
             setToast({
                 message: 'Task completada com sucesso!',
+                type: 'success',
+            })
+        })
+    }
+
+    const deleteTask = (id: string | undefined): void => {
+        setIsLoading(true)
+        service.delete<Task>(`/task/${id}`).then(() => {
+            setIsLoading(false)
+            getTasks()
+            setToast({
+                message: 'Task deletada com sucesso!',
                 type: 'success',
             })
         })
@@ -110,6 +126,7 @@ export default function TasksProvider({ children }: Props) {
                 addTask, 
                 showTask,
                 detailsTask,
+                deleteTask,
                 updateTask,
                 completeTask
             }}>
