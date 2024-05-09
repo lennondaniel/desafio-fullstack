@@ -6,8 +6,8 @@ import { RequestTaskDto } from "../Dtos/tasks.dto";
 export class TasksRepository implements ITaskRepository {
   constructor(private readonly model: Model<Task>) {}
 
-  async create(data: Task): Promise<void> {
-    await this.model.create(data);
+  async create(data: Task): Promise<Task> {
+    return await this.model.create(data);
   }
 
   async getAll(): Promise<Task[]> {
