@@ -28,6 +28,8 @@ custom:
     accessKeyId: root
     secretAccessKey: root
     skipCacheInvalidation: false
+  serverless-offline-ses-v2:
+    port: 8005
 
 
 functions:
@@ -73,4 +75,4 @@ plugins:
   - serverless-plugin-typescript
   - serverless-offline
   - serverless-offline-sqs
-  - serverless-lift
+  - serverless-offline-ses-v2
