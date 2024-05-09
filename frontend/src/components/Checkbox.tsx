@@ -1,12 +1,20 @@
-import { InputHTMLAttributes, useEffect, useState } from "react";
+import { Task } from "@/interfaces/tasks.interface";
+import {ChangeEvent, MouseEvent, useContext, useEffect, useState } from "react";
+import { TasksContext, TasksContextType } from "./TasksProvider";
 
 interface Props {
     checked: boolean
+    task: Task
 }
 
 export default function Checkbox (props: Props) {
     const [checked, setChecked] = useState<boolean>(false)
+    const {completeTask} = useContext(TasksContext) as TasksContextType
 
+    const onHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+        setChecked(event.target?.checked)
+        completeTask({...props.task, completed: event.target?.checked})
+    }
     useEffect(() => {
         setChecked(props.checked)
     }, [props.checked])
@@ -17,7 +25,7 @@ export default function Checkbox (props: Props) {
                     checked:bg-green-700 checked:border-0
                 "
                 type="checkbox"
-                onChange={(event) => setChecked(event.target.checked)}
+                onChange={(event) => onHandler(event)}
                 checked={checked}
             />
             <svg

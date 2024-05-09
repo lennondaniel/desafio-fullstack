@@ -22,6 +22,7 @@ export type TasksContextType = {
     detailsTask: (id: string | undefined) => Promise<Task>
     showTask: (id: string | undefined) => void
     updateTask: (task: Task) => void
+    completeTask: (task: Task) => void
 }
 interface Props {
     children: ReactElement
@@ -85,6 +86,17 @@ export default function TasksProvider({ children }: Props) {
         })
     }
 
+    const completeTask = (task: Task): void => {
+        service.put<Task>(`/task/${task._id}`, task).then((resp) => {
+            setIsLoading(false)
+            getTasks()
+            setToast({
+                message: 'Task completada com sucesso!',
+                type: 'success',
+            })
+        })
+    }
+
     return (
         <TasksContext.Provider value={{ 
                 tasks, 
@@ -98,7 +110,8 @@ export default function TasksProvider({ children }: Props) {
                 addTask, 
                 showTask,
                 detailsTask,
-                updateTask
+                updateTask,
+                completeTask
             }}>
             {children}
         </TasksContext.Provider>

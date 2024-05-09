@@ -3,7 +3,6 @@ import Checkbox from "./Checkbox";
 import ButtonActions from "./ButtonActions";
 import { RiMenuSearchLine } from "react-icons/ri";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
-import Skeleton from "react-loading-skeleton";
 import { useContext } from "react";
 import { TasksContext, TasksContextType } from "./TasksProvider";
 import { useRouter } from "next/navigation";
@@ -23,7 +22,7 @@ export default function Card ({task}: Props) {
     return (
         <div className="flex justify-between rounded bg-white items-center p-3 mb-5 shadow-sm">
             <div className="flex gap-3">
-                {<Checkbox checked={task.completed ?? false }/> || <Skeleton />}
+                {<Checkbox task={task} checked={task.completed ?? false } />}
                 <p className={`capitalize text-base font-regular text-gray-500 ${task.completed && 'line-through'}`}>{task.description || <Skeleton />}</p>
             </div>
         
