@@ -19,6 +19,7 @@ export type TasksContextType = {
     setTaskInput: Dispatch<SetStateAction<string>>
     getTasks: () => void
     addTask: (task: string) => void
+    detailsTask: (id: string | undefined) => Promise<Task>
     showTask: (id: string | undefined) => void
     updateTask: (task: Task) => void
 }
@@ -67,6 +68,10 @@ export default function TasksProvider({ children }: Props) {
         })
     }
 
+    const detailsTask = async (id: string | undefined): Promise<Task> => {
+        return await service.get<Task>(`/task/${id}`)
+    }
+
     const updateTask = (task: Task): void => {
         setIsLoading(true)
         service.put<Task>(`/task/${task._id}`, task).then((resp) => {
@@ -92,6 +97,7 @@ export default function TasksProvider({ children }: Props) {
                 getTasks, 
                 addTask, 
                 showTask,
+                detailsTask,
                 updateTask
             }}>
             {children}

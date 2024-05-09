@@ -6,6 +6,7 @@ import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import { useContext } from "react";
 import { TasksContext, TasksContextType } from "./TasksProvider";
+import { useRouter } from "next/navigation";
 
 interface Props {
     task: Task
@@ -13,6 +14,11 @@ interface Props {
 
 export default function Card ({task}: Props) {
     const {showTask} = useContext(TasksContext) as TasksContextType
+    const router = useRouter()
+
+    const detailsTask = () => {
+        router.push(`/details/${task?._id}`)
+    }
 
     return (
         <div className="flex justify-between rounded bg-white items-center p-3 mb-5 shadow-sm">
@@ -20,20 +26,27 @@ export default function Card ({task}: Props) {
                 {<Checkbox checked={task.completed ?? false }/> || <Skeleton />}
                 <p className={`capitalize text-base font-regular text-gray-500 ${task.completed && 'line-through'}`}>{task.description || <Skeleton />}</p>
             </div>
-            {
-                !task.completed &&
-                    <div className="flex gap-3">
-                        <ButtonActions onHandler={() => showTask(task?._id)}>
-                            <RiMenuSearchLine />
-                        </ButtonActions>
+        
+               
+            <div className="flex gap-3">
+                <ButtonActions onHandler={() => detailsTask()}>
+                    <RiMenuSearchLine />
+                </ButtonActions>
+                {
+                    !task?.completed && 
+                    <>
                         <ButtonActions onHandler={() => showTask(task?._id)}>
                             <FaPencilAlt />
                         </ButtonActions>
                         <ButtonActions onHandler={() => showTask(task?._id)}>
                             <FaRegTrashAlt />
                         </ButtonActions>
-                    </div>
-            }
+                    </>
+                        
+                }
+               
+            </div>
+            
         </div>
     )
 }

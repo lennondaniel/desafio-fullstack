@@ -1,25 +1,26 @@
 'use client'
+import Container from "@/components/Container";
 import Header from "@/components/Header";
 import Tasks from "@/components/Tasks";
 import { TasksContext, TasksContextType } from "@/components/TasksProvider";
 import Toast from "@/components/Toast";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 export default function Home() {
 
-  const {getTasks} = useContext(TasksContext) as TasksContextType
-  
+  const { getTasks } = useContext(TasksContext) as TasksContextType
+
   useEffect(() => {
-     getTasks()
+    getTasks()
   }, [])
 
   return (
-    <main className="min-h-screen bg-indigo-300 items-center p-24">
-      <div className="container card shadow-lg bg-bright rounded flex flex-col p-10">
+    <Container>
+      <>
         <Header />
         <Tasks />
         <Toast />
-      </div>
-    </main>
+      </>
+    </Container>
   );
 }
