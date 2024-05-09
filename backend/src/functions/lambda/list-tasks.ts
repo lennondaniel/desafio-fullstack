@@ -18,7 +18,7 @@ export const handler = async (
       statusCode: 200,
       body: JSON.stringify(response),
     }
-  } catch (error) {
+  } catch (error: any) {
     return {
       statusCode: 404,
       body: JSON.stringify({

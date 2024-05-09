@@ -3,6 +3,7 @@ import { TasksService } from '../../services/tasks.service'
 import { TasksRepository } from '../../repositories/tasks.repository'
 import { TaskModel } from '../../models/tasks.model'
 import { DbConnect } from '../../database/connection'
+import { Error } from 'mongoose'
 
 const taskRepository = new TasksRepository(TaskModel)
 const tasksService = new TasksService(taskRepository) 
@@ -20,7 +21,7 @@ export const handler = async (
       statusCode: 200,
       body: JSON.stringify(response),
     }
-  } catch (error) {
+  } catch (error: any) {
     return {
       statusCode: 404,
       body: JSON.stringify({

@@ -1,6 +1,6 @@
 import { Document, Model, Schema, model } from "mongoose"
 
-export interface Task extends Document{
+export interface Task {
     description: string
     completed?: boolean
     createdAt?: Date

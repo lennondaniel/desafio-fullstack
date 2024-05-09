@@ -17,16 +17,16 @@ export const handler = async (
     const id = event.pathParameters?.id as string
     const { description, completed } = JSON.parse(event.body!) as RequestTaskDto
 
-    await tasksService.updateTask(id, {
+    const response = await tasksService.updateTask(id, {
       description,
       completed
     })
   
     return {
       statusCode: 200,
-      body: JSON.stringify({}),
+      body: JSON.stringify(response),
     }
-  } catch (error) {
+  } catch (error: any) {
     return {
       statusCode: 404,
       body: JSON.stringify({

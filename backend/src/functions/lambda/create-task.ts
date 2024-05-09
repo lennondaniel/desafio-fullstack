@@ -16,16 +16,16 @@ export const handler = async (
     DbConnect()
     const { description, completed } = JSON.parse(event.body!) as RequestTaskDto
 
-    await tasksService.createTask({
+    const response = await tasksService.createTask({
       description,
       completed
     })
   
     return {
       statusCode: 200,
-      body: JSON.stringify({}),
+      body: JSON.stringify(response),
     }
-  } catch (error) {
+  } catch (error: any) {
     return {
       statusCode: 404,
       body: JSON.stringify({
