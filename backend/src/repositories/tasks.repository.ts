@@ -27,9 +27,10 @@ export class TasksRepository implements ITaskRepository {
     if(!task) {
       throw new Error('Task not found')
     }
+    const date = new Date()
     task.description = description
     task.completed = completed
-    task.completedAt = completed ? new Date() : null
+    task.completedAt = completed ? date : null
     return await task.save();
   }
 
