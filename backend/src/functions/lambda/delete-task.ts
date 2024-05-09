@@ -14,11 +14,11 @@ export const handler = async (
     DbConnect()
 
     const id = event.pathParameters?.id as string
-    const response = await tasksService.deleteTask(id)
+    await tasksService.deleteTask(id)
   
     return {
       statusCode: 200,
-      body: JSON.stringify(response),
+      body: JSON.stringify({}),
     }
   } catch (error) {
     return {

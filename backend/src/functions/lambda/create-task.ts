@@ -21,11 +21,11 @@ export const handler = async (
       completed
     })
 
-    const queue = await tasksService.publishQueueEmail(event)
+    await tasksService.publishQueueEmail(event)
   
     return {
       statusCode: 200,
-      body: JSON.stringify(queue),
+      body: JSON.stringify({}),
     }
   } catch (error) {
     return {

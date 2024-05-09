@@ -4,7 +4,6 @@ import { ITaskRepository } from "../interfaces/tasks.interface";
 import { Task, TaskModel } from "../models/tasks.model";
 import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import 'dotenv/config'
-import { error } from "console";
 
 export class TasksService {
     constructor(readonly respository: ITaskRepository){}
@@ -35,7 +34,7 @@ export class TasksService {
     }
 
     async deleteTask(id: string): Promise<void> {
-        return await this.respository.delete(id)
+        await this.respository.delete(id)
     }
 
     async publishQueueEmail (event: APIGatewayEvent) {
